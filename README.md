@@ -3,11 +3,15 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: In my naked_twins implementation, for each unit I do:
+     - find a value(s) of length 2 that appears in the unit exactly twice
+     - exclude both digits of that value from all other boxes in unit
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: As we already has a framework that propagates constraints across all units,
+   diagonal sudoku is just a matter of additing two additional units into 
+   unitlist: one unit per diagonal.
 
 ### Install
 
