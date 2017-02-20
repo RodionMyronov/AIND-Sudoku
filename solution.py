@@ -1,3 +1,5 @@
+from solution_init import *
+
 assignments = []
 
 def assign_value(values, box, value):
@@ -29,10 +31,6 @@ def naked_twins(values):
                     if values[box] != p:
                         assign_value(values, box, values[box].replace(p[0],'').replace(p[1],''))
     return values
-
-def cross(A, B):
-    "Cross product of elements in A and elements in B."
-    return [a+b for a in A for b in B]
 
 def grid_values(grid):
     """
@@ -142,22 +140,6 @@ def solve(grid):
         The dictionary representation of the final sudoku grid. False if no solution exists.
     """
     return search(grid_values(grid))
-
-# some necessary globals
-# it would be better to make all the procedures above be methods of some class,
-# make these globals internal properties and initialize them in the constructor.
-# But it would break tests in solution_test.py
-rows = 'ABCDEFGHI'
-cols = '123456789'
-boxes = cross(rows, cols)
-row_units = [cross(r, cols) for r in rows]
-column_units = [cross(rows, c) for c in cols]
-square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
-diagonal_units = [[rows[i]+cols[i] for i in range(len(rows))],[rows[i]+cols[len(rows)-i-1] for i in range(len(rows))]]
-unitlist = row_units + column_units + square_units + diagonal_units
-units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)   
-
 
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'

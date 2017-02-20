@@ -3,13 +3,35 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: In my naked_twins implementation, for each unit I do:
-     - find a value(s) of length 2 that appears in the unit exactly twice
-     - exclude both digits of that value from all other boxes in unit
+A: In general, our Sudoku solver contains two different steps:
+     - reduction step, where we extract as more information from the curent sudoku
+       configuration as we can;
+     - search step, where we make some assumption to be able to proceed. 
+       We use this step only if we cannot solve sudoku directly, without assumptions.
+       
+   Search step can be time-consuming as it, in fact, requires us to solve 
+   several variations of the initial sudoku to check which one is a solution.
+   Thus, it is important to have as less search steps as we can by improving 
+   reduction step quality. 
+   
+   So, the more reduction strategies we have the better. 
+   
+   Naked Twins strategy itself is based on the simple fact: if, in some unit, 
+   we have 2 boxes with same 2 (and only 2) possible values, then those 2 values 
+   are impossible for all other boxes in this unit. 
+   In my naked_twins implementation, for each unit I do: 
+      - find a value(s) of length 2 that appears in the unit exactly twice 
+      - exclude both digits of that value from all other boxes in unit
+   
+
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: As we already has a framework that propagates constraints across all units,
+A: Diagonal sudoku does not introduce additional chalange as compared to 
+   normal sudoku. I would say it even makes it easier to solve: more constraints
+   means more information and more reductions at each step.
+   From the implementation point of view diagonal sudoku is also simple. 
+   As we already have a framework that propagates constraints across all units,
    diagonal sudoku is just a matter of additing two additional units into 
    unitlist: one unit per diagonal.
 
