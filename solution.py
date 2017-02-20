@@ -13,6 +13,7 @@ def assign_value(values, box, value):
 
 def naked_twins(values):
     """Eliminate values using the naked twins strategy.
+    
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
 
@@ -34,8 +35,8 @@ def naked_twins(values):
     return values
 
 def grid_values(grid):
-    """
-    Convert grid into a dict of {square: char} with '123456789' for empties.
+    """Convert grid into a dict of {square: char} with '123456789' for empties.
+    
     Args:
         grid(string) - A grid in string form.
     Returns:
@@ -47,8 +48,8 @@ def grid_values(grid):
     return dict(zip(boxes,[('123456789' if c=='.' else c) for c in grid]))
 
 def display(values):
-    """
-    Display the values as a 2-D grid.
+    """ Display the values as a 2-D grid.
+    
     Args:
         values(dict): The sudoku in dictionary form
     """
@@ -61,6 +62,14 @@ def display(values):
     print
 
 def eliminate(values):
+    """Eliminate values using the basic elimination strategy.
+    
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the values dictionary with known boxes values eliminated from thier peers.
+    """
     logging.debug('Eliminate: started')
     result = values.copy()
     for box in values:
@@ -75,6 +84,15 @@ def eliminate(values):
     return result
 
 def only_choice(values):
+    """Eliminate values using the 'only choise' strategy.
+    
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the values dictionary with boxes resolved using 'only choice' strategy.
+    """
+    
     logging.debug('Only_choice: started')
     for u in unitlist:
         # for each digit find all the boxes it appears in
@@ -90,6 +108,14 @@ def only_choice(values):
     return values
 
 def reduce_puzzle(values):
+    """Eliminate values by applying all the available strategies.
+    
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the values dictionary after applying all reduction strategies.
+    """
     stalled = False
     while not stalled:
         # Check how many boxes have a determined value
@@ -115,6 +141,15 @@ def reduce_puzzle(values):
     return values
 
 def search(values):
+    """Recursively search for solution by reducing the grid and making assumptions.
+    
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        - solved grid dictionary if solution found
+        - False otherwise
+    """
     logging.debug('Search: started')
     "Using depth-first search and propagation, create a search tree and solve the sudoku."
     # First, reduce the puzzle using the previous function
