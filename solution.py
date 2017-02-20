@@ -1,6 +1,5 @@
 from solution_init import *
-
-assignments = []
+import logging
 
 def assign_value(values, box, value):
     """
@@ -20,6 +19,7 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
+    logging.debug('Naked_twins: started')
     for unit in unitlist:
         # find unique two-digit values in unit
         pairs = set([values[box] for box in unit if len(values[box]) == 2])
@@ -28,7 +28,8 @@ def naked_twins(values):
             # if the value appears exactly twice in unit, exclude its digits from other boxes
             if cnt == 2:
                 for box in unit:
-                    if values[box] != p:
+                    if values[box] != p and (p[0] in values[box] or p[1] in values[box]):
+                        logging.debug('Naked_twins: box {0} changed from {1} to {2}'.format(box,values[box],values[box].replace(p[0],'').replace(p[1],'')))
                         assign_value(values, box, values[box].replace(p[0],'').replace(p[1],''))
     return values
 
@@ -60,16 +61,21 @@ def display(values):
     print
 
 def eliminate(values):
+    logging.debug('Eliminate: started')
     result = values.copy()
     for box in values:
         # if the box has single value, exclude this digit from all pears of this box
         if len(values[box]) == 1:
             for p in peers[box]:
-                assign_value(result, p, result[p].replace(values[box],''))
+                if values[box] in result[p]:
+                    logging.debug('Eliminate: box {0} changed from {1} to {2}'.format(p,result[p],result[p].replace(values[box],'')))
+                    assign_value(result, p, result[p].replace(values[box],''))
+                
                 
     return result
 
 def only_choice(values):
+    logging.debug('Only_choice: started')
     for u in unitlist:
         # for each digit find all the boxes it appears in
         digits = {str(i+1) : [] for i in range(9)}
@@ -79,6 +85,7 @@ def only_choice(values):
         # if some digit appears exactly ones and this appearence is not in resolved box - put digit there
         for d in digits.keys():
             if (len(digits[d]) == 1) and (len(values[digits[d][0]]) > 1):
+                logging.debug('Only_choice: box {0} changed from {1} to {2}'.format(digits[d][0],values[digits[d][0]],d))
                 assign_value(values, digits[d][0], d)
     return values
 
@@ -108,6 +115,7 @@ def reduce_puzzle(values):
     return values
 
 def search(values):
+    logging.debug('Search: started')
     "Using depth-first search and propagation, create a search tree and solve the sudoku."
     # First, reduce the puzzle using the previous function
     reduced = reduce_puzzle(values)
@@ -124,6 +132,7 @@ def search(values):
     
     # Now use recursion to solve each one of the resulting sudokus, and if one returns a value (not False), return that answer!
     for c in reduced[box_to_guess]:
+        logging.debug('Search: assume {0} is "{1}"'.format(box_to_guess,c))
         new_guess = reduced.copy()
         new_guess[box_to_guess] = c
         res = search(new_guess)
@@ -142,8 +151,10 @@ def solve(grid):
     return search(grid_values(grid))
 
 if __name__ == '__main__':
+    logging.info('Soduku solver started.')
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
     display(solve(diag_sudoku_grid))
+    logging.info('Soduku solver done.')
 
 
     try:
